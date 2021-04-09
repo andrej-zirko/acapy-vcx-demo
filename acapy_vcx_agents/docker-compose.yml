@@ -3,12 +3,12 @@ version: '3'
 services:
   acapy-agent:
     build:
-      context: https://github.com/sktston/aries-cloudagent-python.git#develop
+      context: https://github.com/andrej-zirko/aries-cloudagent-python.git#0.6.0-wait 
       dockerfile: ./docker/Dockerfile.run
     ports:
       - 8020-8021:8020-8021
     networks:
-      - acapy
+      - von_von
     depends_on:
       - postgres
     entrypoint: ["./wait-for-it.sh", "postgres:5432", "--", "aca-py",
@@ -19,7 +19,7 @@ services:
                  "--tails-server-base-url", "http://host.docker.internal:6543",
                  "--storage-type", "indy",
                  "--genesis-url", "http://host.docker.internal:9000/genesis",
-                 "--inbound-transport", "http_custodial", "0.0.0.0", "8020",
+                 "--inbound-transport", "http", "0.0.0.0", "8020",
                  "--outbound-transport", "http",
                  "--label", "cloud.agent",
                  "--seed", "000000000000000000000000Steward1",
@@ -36,6 +36,7 @@ services:
                  "--auto-store-credential",
                  "--auto-verify-presentation",
                  "--auto-respond-messages",
+                 "--auto-provision",
                  "--preserve-exchange-records",
                  "--log-level", "debug",
                  "--trace",
@@ -64,14 +65,12 @@ services:
       - SERVER_PORT=8080
       - SERVER_MAX_REQUEST_SIZE_KB=300
       - SERVER_ENABLE_TLS=false
-      - CERTIFICATE_PATH=
-      - CERTIFICATE_AUTHORITY_PATH=
-      - CERTIFICATE_KEY_PATH=
 
       - AGENCY_WALLET_NAME=vcxagency-node
       - AGENCY_DID=VsKV7grR1BUE29mG2Fm2kX
       - AGENCY_SEED_SECRET=0000000000000000000000000Forward
       - AGENCY_WALLET_KEY_SECRET=01234567890123456789
+      - AGENCY_TYPE=enterprise
 
       - PG_STORE_HOST=host.docker.internal
       - PG_STORE_PORT=5432
@@ -95,7 +94,8 @@ services:
     ports:
       - '5432:5432'
     networks:
-      - acapy
+      - von_von
 
 networks:
-  acapy:
+  von_von:
+    external: true
