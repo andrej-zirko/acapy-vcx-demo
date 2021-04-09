@@ -11,16 +11,17 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
-	"github.com/skip2/go-qrcode"
-	"github.com/tidwall/gjson"
 	"net"
 	"net/http"
 	"net/url"
 	"os"
 	"strconv"
 	"strings"
+
+	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
+	"github.com/skip2/go-qrcode"
+	"github.com/tidwall/gjson"
 
 	"github.com/sktston/acapy-controller-go/utils"
 )
@@ -340,20 +341,21 @@ func createWalletAndDid() error {
 		"webhook_urls": ["`+webhookUrl+`"]
 	}`, "")
 
-	log.Info("Create a new wallet:" + utils.PrettyJson(body))
-	respAsBytes, err := utils.RequestPost(config.AgentApiUrl, "/wallet", adminWalletName, []byte(body))
-	if err != nil {
-		log.Error("utils.RequestPost() error:", err.Error())
-		return err
-	}
-	log.Info("response: " + utils.PrettyJson(string(respAsBytes), "  "))
+	log.Info("COMMENTED OUT Create a new wallet:" + utils.PrettyJson(body))
+
+	// respAsBytes, err := utils.RequestPost(config.AgentApiUrl, "/wallet", adminWalletName, []byte(body))
+	// if err != nil {
+	// 	log.Error("utils.RequestPost() error:", err.Error())
+	// 	return err
+	// }
+	// log.Info("response: " + utils.PrettyJson(string(respAsBytes), "  "))
 
 	body = utils.PrettyJson(`{
 		"seed": "`+seed+`"
 	}`, "")
 
 	log.Info("Create a new local did:" + utils.PrettyJson(body))
-	respAsBytes, err = utils.RequestPost(config.AgentApiUrl, "/wallet/did/create", walletName, []byte(body))
+	respAsBytes, err := utils.RequestPost(config.AgentApiUrl, "/wallet/did/create", walletName, []byte(body))
 	if err != nil {
 		log.Error("utils.RequestPost() error:", err.Error())
 		return err
